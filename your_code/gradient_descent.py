@@ -82,27 +82,31 @@ class GradientDescent:
             self.model - (np.array) A 1D array of model parameters of length
                 d+1. The +1 refers to the bias term.
         """
+        weights = np.random.uniform(-.1,.1,(1,features.shape[1]))
         y = np.ones((features.shape[0],1))
-        features = np.concatenate((features,y), axis = 1)
-        weights = np.random.uniform(-.5, .5, (1,features.shape[1]))
-        weights[-1] = 1 
-        loss = 0
+        features = np.append(features,y, axis = 1)
+        print("features")
+        print(features)
+        if(batch_size != None):
+            features = features[0:batch_size]
+        
+        weights = np.append(weights,1)
+       
+        loss = 1
         newLoss = 0
         gradient = 0
         for i in range(max_iter):
-            loss = self.loss.forward(features, weights, targets)
-            gradient = self.loss.backward(features, weights, targets)
-            weights = weights - (self.learning_rate * gradient)
-            newLoss = self.loss.forward(features, weights, targets)
-            if(np.absolute((loss - newLoss)) < .0001):
-                break
+            while(abs(loss - newLoss) > .0001):
+                loss = self.loss.forward(features, weights, targets)
+                gradient = self.loss.backward(features, weights, targets)
+                weights = weights - (self.learning_rate * gradient)
+                newLoss = self.loss.forward(features, weights, targets)
+            
+            
         
         self.model = weights
-
-
-
-
         
+
 
     def predict(self, features):
         """
@@ -121,7 +125,16 @@ class GradientDescent:
                 where index d corresponds to the prediction of row N of
                 features.
         """
-        raise NotImplementedError()
+        y = np.ones((features.shape[0],1))
+        features = np.append(features,y, axis = 1)
+        confidence = self.confidence(features)
+        predictions = []
+        for i in range(len(confidence)):
+            predictions.append(np.sign(confidence[i]))
+        
+        return np.asarray(predictions)
+
+        
 
     def confidence(self, features):
         """
@@ -137,4 +150,11 @@ class GradientDescent:
                 N, where index d corresponds to the confidence of row N of
                 features.
         """
-        raise NotImplementedError()
+        confidence = []
+        
+        for i in range (features.shape[0]):
+            confidence.append(np.dot(self.model, features[i]))
+        
+        return np.asarray(confidence)
+
+

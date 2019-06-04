@@ -95,10 +95,10 @@ class SquaredLoss(Loss):
         """
         loss = 0
         for i in range(len(y)): 
-            loss += np.square(y[i] - np.transpose(w)@X[i]) 
+            loss += np.square(y[i] - np.dot(w,X[i])) 
         loss = loss/(2*len(y)) 
-        if(self.regularization!= None):
-            loss += self.regularization
+        if(self.regularization):
+            loss += self.regularization.forward(w)
         #print(loss ="" + loss)
         return loss
             
@@ -125,10 +125,10 @@ class SquaredLoss(Loss):
         """
         loss = 0
         for i in range(len(y)): 
-            loss += (y[i] - np.transpose(w)@X[i])*X[i] 
+            loss += (y[i] - np.dot(w,X[i]))*X[i] 
         loss = (loss/(len(y))) * (-1)
-        if(self.regularization!= None):
-            loss += self.regularization
+        if(self.regularization):
+            loss += self.regularization.forward(w)
         #print(loss ="" + loss)
         return np.asarray(loss)
 
@@ -166,14 +166,14 @@ class HingeLoss(Loss):
         """
         loss = 0
         for i in range(len(y)): 
-            temp = 1 - y[i]*(np.transpose(w)@X[i])
+            temp = 1 - y[i]*(np.dot(w,X[i]))
             if(temp > 0):
                 loss += temp 
             else:
                 loss += 0 
         loss = loss/(len(y)) 
-        if(self.regularization!= None):
-            loss += self.regularization
+        if(self.regularization):
+            loss += self.regularization.forward(w)
         #print(loss ="" + loss)
         return loss
 
@@ -198,13 +198,13 @@ class HingeLoss(Loss):
         """
         loss = 0
         for i in range(len(y)): 
-            temp = 1 - y[i]*(np.transpose(w)@X[i])
+            temp = 1 - y[i]*(np.dot(w,X[i]))
             if(temp > 0):
                 loss +=  (((-1) * y[i]*X[i]))
         loss = loss/(len(y)) 
-        if(self.regularization!= None):
-            loss += self.regularization
-        return loss
+        if(self.regularization):
+            loss += self.regularization.forward(w)
+        return np.asarray(loss)
 
 
 class ZeroOneLoss(Loss):
