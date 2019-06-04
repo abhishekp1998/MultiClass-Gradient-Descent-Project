@@ -93,7 +93,16 @@ class SquaredLoss(Loss):
             loss - (float) The calculated loss normalized by the number of
                 examples, N.
         """
-        raise NotImplementedError()
+        loss = 0
+        for i in range(len(y)): 
+            loss += np.square(y[i] - np.transpose(w)@X[i]) 
+        loss = loss/(2*len(y)) 
+        if(self.regularization!= None):
+            loss += self.regularization
+        #print(loss ="" + loss)
+        return loss
+            
+
 
     def backward(self, X, w, y):
         """
@@ -114,7 +123,14 @@ class SquaredLoss(Loss):
                 function with respect to the model parameters. The +1 refers to
                 the bias term.
         """
-        raise NotImplementedError()
+        loss = 0
+        for i in range(len(y)): 
+            loss += (y[i] - np.transpose(w)@X[i])*X[i] 
+        loss = (loss/(len(y))) * (-1)
+        if(self.regularization!= None):
+            loss += self.regularization
+        #print(loss ="" + loss)
+        return np.asarray(loss)
 
 
 class HingeLoss(Loss):
@@ -148,7 +164,18 @@ class HingeLoss(Loss):
             loss - (float) The calculated loss normalized by the number of
                 examples, N.
         """
-        raise NotImplementedError()
+        loss = 0
+        for i in range(len(y)): 
+            temp = 1 - y[i]*(np.transpose(w)@X[i])
+            if(temp > 0):
+                loss += temp 
+            else:
+                loss += 0 
+        loss = loss/(len(y)) 
+        if(self.regularization!= None):
+            loss += self.regularization
+        #print(loss ="" + loss)
+        return loss
 
     def backward(self, X, w, y):
         """
@@ -169,7 +196,15 @@ class HingeLoss(Loss):
                 function with respect to the model parameters. The +1 refers to
                 the bias term.
         """
-        raise NotImplementedError()
+        loss = 0
+        for i in range(len(y)): 
+            temp = 1 - y[i]*(np.transpose(w)@X[i])
+            if(temp > 0):
+                loss +=  (((-1) * y[i]*X[i]))
+        loss = loss/(len(y)) 
+        if(self.regularization!= None):
+            loss += self.regularization
+        return loss
 
 
 class ZeroOneLoss(Loss):

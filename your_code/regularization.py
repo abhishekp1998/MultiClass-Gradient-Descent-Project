@@ -67,7 +67,12 @@ class L1Regularization(Regularization):
             regularization_term - (float) The value of the regularization term
                 evaluated at w.
         """
-        raise NotImplementedError()
+        reg = 0
+        for i in range(len(w) - 1):
+            reg += np.abs(w[i])
+        reg = reg*self.reg_param
+        return reg 
+
 
     def backward(self, w):
         """
@@ -83,7 +88,19 @@ class L1Regularization(Regularization):
             gradient_term - (np.array) A numpy array of length d+1. The
                 gradient of the regularization term evaluated at w.
         """
-        raise NotImplementedError()
+        emptylist = [] 
+        for i in range (len(w) - 1):
+            if( w[i] == 0):
+                emptylist.append(0)
+            elif( w[i] > 0):
+                emptylist.append(1 * self.reg_param)
+            elif( w[i] < 0):
+                emptylist.append(-1 * self.reg_param)
+        emptylist.append(0)
+
+        return np.asarray(emptylist)
+
+
 
 
 class L2Regularization(Regularization):
@@ -106,7 +123,12 @@ class L2Regularization(Regularization):
             regularization_term - (float) The value of the regularization term
                 evaluated at w.
         """
-        raise NotImplementedError()
+        reg = 0
+        for i in range(len(w) - 1):
+            reg += np.square(np.abs(w[i]))
+        reg = (reg/2)*self.reg_param
+        return reg 
+
 
     def backward(self, w):
         """
@@ -122,4 +144,8 @@ class L2Regularization(Regularization):
             gradient_term - (np.array) A numpy array of length d+1. The
                 gradient of the regularization term evaluated at w.
         """
-        raise NotImplementedError()
+        reg = []
+        for i in range(len(w) - 1):
+            reg.append(w[i] * self.reg_param)
+        reg.append(0)
+        return np.asarray(reg) 

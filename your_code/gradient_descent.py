@@ -82,7 +82,27 @@ class GradientDescent:
             self.model - (np.array) A 1D array of model parameters of length
                 d+1. The +1 refers to the bias term.
         """
-        raise NotImplementedError()
+        y = np.ones((features.shape[0],1))
+        features = np.concatenate((features,y), axis = 1)
+        weights = np.random.uniform(-.5, .5, (1,features.shape[1]))
+        weights[-1] = 1 
+        loss = 0
+        newLoss = 0
+        gradient = 0
+        for i in range(max_iter):
+            loss = self.loss.forward(features, weights, targets)
+            gradient = self.loss.backward(features, weights, targets)
+            weights = weights - (self.learning_rate * gradient)
+            newLoss = self.loss.forward(features, weights, targets)
+            if(np.absolute((loss - newLoss)) < .0001):
+                break
+        
+        self.model = weights
+
+
+
+
+        
 
     def predict(self, features):
         """
